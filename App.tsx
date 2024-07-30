@@ -1,118 +1,88 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
+import { LineChart } from 'react-native-chart-kit';
+import * as Progress from 'react-native-progress';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import { Header } from 'react-native/Libraries/NewAppScreen';
+import ProgressBar from './components/ProgressBar';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+const StockMarketUI = () => {
+  const screenWidth = Dimensions.get('window').width;
+  
+  const data = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    datasets: [
+      {
+        data: [50, 80, 40, 95, 70, 85],
+        strokeWidth: 2,
+      },
+    ],
+  };
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  const chartConfig = {
+    backgroundGradientFrom: '#1E2923',
+    backgroundGradientTo: '#08130D',
+    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+    strokeWidth: 2,
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>Stock Market</Text>
+      <LineChart
+        data={data}
+        width={screenWidth - 20}
+        height={220}
+        chartConfig={chartConfig}
+        bezier
+        style={styles.chart}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+      <View style={styles.progressBarContainer}>
+        <Text style={styles.progressLabel}>Stock Growth</Text>
+        <Progress.Bar progress={0.7} width={screenWidth - 40} />
+      </View>
+
+      <ScrollView>
+        <View style={styles.progressBarContainer}>
+        {/* <StockMarketScreen/> */}
+        <Header/>
         </View>
+        <View>
+          <ProgressBar progress={undefined} label={undefined}></ProgressBar>
+        </View>
+        
       </ScrollView>
-    </SafeAreaView>
+    </ScrollView>
+    
   );
-}
+};
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
+    backgroundColor: '#000',
+    padding: 10,
   },
-  sectionTitle: {
+  title: {
+    color: '#fff',
     fontSize: 24,
-    fontWeight: '600',
+    textAlign: 'center',
+    marginVertical: 20,
   },
-  sectionDescription: {
-    marginTop: 8,
+  chart: {
+    marginVertical: 20,
+    borderRadius: 16,
+  },
+  progressBarContainer: {
+    marginVertical: 20,
+    alignItems: 'center',
+  },
+  progressLabel: {
+    color: '#fff',
     fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+    marginBottom: 10,
   },
 });
 
-export default App;
+export default StockMarketUI;
